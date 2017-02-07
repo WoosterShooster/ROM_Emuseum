@@ -41,7 +41,7 @@
 			output2+="<li> Object <b>" + file_data.objects[i].invno.value + "</b> title " + file_data.objects[i].title.value + " contains search term <b>" + search_term + "</b></li>" 
 		}
 		else if (file_data.objects[i].medium.value.includes(search_term)) {
-			output2+="<li> Object <b>" + file_data.objects[i].invno.value + "</b> classification contains search term <b>" + search_term + "</b></li>"
+			output2+="<li> Object <b>" + file_data.objects[i].invno.value + "</b> medium contains search term <b>" + search_term + "</b></li>"
 		}
 	}
 	output2+="</ol>"
