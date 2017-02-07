@@ -23,6 +23,7 @@
 	var output;
 
 	$.getJSON('http://localhost/emuseum_report/json_data.txt', function(json) {
+//	$.getJSON('http://localhost/emuseum_report/two_lovers_search.txt', function(json) {
 		file_data = json;
 		console.log(file_data);
 		for (var i in file_data.objects) {
@@ -31,15 +32,19 @@
 	 	output+="</ul>";
 		document.getElementById("first_div").innerHTML=output;
 
-	var output2="<ul>";
-	var search_term = 'bracelet';
+	var output2="<ol>";
+	var search_term = 'limestone';
+//	var search_term = 'two';
 	for (var i = 0; i < file_data.objects.length; i++){
 		//look for entry with matching value
 		if (file_data.objects[i].title.value.includes(search_term)) {
-			output2+="<li> Object <b>" + file_data.objects[i].invno.value + "</b> title contains search term <b>" + search_term + "</b></li>" 
+			output2+="<li> Object <b>" + file_data.objects[i].invno.value + "</b> title " + file_data.objects[i].title.value + " contains search term <b>" + search_term + "</b></li>" 
+		}
+		else if (file_data.objects[i].medium.value.includes(search_term)) {
+			output2+="<li> Object <b>" + file_data.objects[i].invno.value + "</b> classification contains search term <b>" + search_term + "</b></li>"
 		}
 	}
-	output2+="</ul>"
+	output2+="</ol>"
 	document.getElementById("results2").innerHTML=output2;
 
 	});
