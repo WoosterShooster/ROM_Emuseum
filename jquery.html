@@ -15,14 +15,12 @@
 	});
  
     </script>
-	<div id="first_div"></div>
-	<div id="results2"></div>
+	<div id="results"></div>
 	
 	<script>
 
 	var output = "<ul>";
 
-	
 	var search_term = 'moss';
 	var search_regexp = new RegExp(search_term, "i");
 	console.log(search_regexp);
@@ -32,23 +30,21 @@
 		console.log(json);
 		file_data = json;
 		console.log(file_data);
-		for (var i in file_data.objects) {
-			output+="<li>" + file_data.objects[i].title.label + ": " + file_data.objects[i].title.value + "</li>"
-		}
-	 	output+="</ul>";
-		document.getElementById("first_div").innerHTML=output;
 
-
+		//start list
 		var output2="<ol>";
+
+		//for each object in the file data...
 		for (var i = 0; i < file_data.objects.length; i++){
-			//look for entry with matching value
-			if ("title" in file_data.objects[i]) {
-				console.log(file_data.objects[i].title.value);
+			if ("title" in file_data.objects[i]) { //check if there's a title
+				console.log(file_data.objects[i].title.value); 
+				//if that title contains the search term
 				if (search_regexp.test(file_data.objects[i].title.value)) {
 					output2+="<li> Object <b>" + file_data.objects[i].invno.value + "</b> title " + file_data.objects[i].title.value + " contains search term <b>" + search_term + "</b></li>";		
-					continue;
+					continue; //print the message and go to the next object
 				}
 			}
+			//if there isn't a matching title, then check for a matching medium
 			if ("medium" in file_data.objects[i]) {
 				console.log(file_data.objects[i].medium.value);
 				if (search_regexp.test(file_data.objects[i].medium.value)) {
@@ -58,7 +54,7 @@
 			}
 		}
 		output2+="</ol>"
-		document.getElementById("results2").innerHTML=output2;
+		document.getElementById("results").innerHTML=output2;
 	});
 
 </script>
