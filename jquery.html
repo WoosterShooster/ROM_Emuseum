@@ -32,29 +32,49 @@
 		console.log(file_data);
 
 		//start list
-		var output2="<ol>";
+		var output="<ol>";
+		var features=["title", "medium"];
 
 		//for each object in the file data...
 		for (var i = 0; i < file_data.objects.length; i++){
-			if ("title" in file_data.objects[i]) { //check if there's a title
-				console.log(file_data.objects[i].title.value); 
-				//if that title contains the search term
-				if (search_regexp.test(file_data.objects[i].title.value)) {
-					output2+="<li> Object <b>" + file_data.objects[i].invno.value + "</b> title " + file_data.objects[i].title.value + " contains search term <b>" + search_term + "</b></li>";		
-					continue; //print the message and go to the next object
-				}
-			}
-			//if there isn't a matching title, then check for a matching medium
-			if ("medium" in file_data.objects[i]) {
-				console.log(file_data.objects[i].medium.value);
-				if (search_regexp.test(file_data.objects[i].medium.value)) {
-					output2+="<li> Object <b>" + file_data.objects[i].invno.value + "</b> medium " + file_data.objects[i].medium.value + " contains search term <b>" + search_term + "</b></li>";		
-					continue;
+
+//			for (var k = 0; k < keys.length; k++) {
+			for (var k in features) {
+				console.log(features[k]);
+				var feature = features[k];
+				console.log(feature);
+				if (feature in file_data.objects[i]) {
+					console.log(file_data.objects[i][feature].value);
+					//if that key contains the search term
+					if (search_regexp.test(file_data.objects[i][feature].value)) {
+						output+="<li> Object <b>" + file_data.objects[i].invno.value + "</b>" + feature +" " + file_data.objects[i][feature].value + " contains search term <b>" + search_term + "</b></li>";		
+						continue; //print the message and go to the next object
+					}
 				}
 			}
 		}
-		output2+="</ol>"
-		document.getElementById("results").innerHTML=output2;
+
+/*
+				if ("title" in file_data.objects[i]) { //check if there's a title
+					console.log(file_data.objects[i].title.value); 
+					//if that title contains the search term
+					if (search_regexp.test(file_data.objects[i].title.value)) {
+						output+="<li> Object <b>" + file_data.objects[i].invno.value + "</b> title " + file_data.objects[i].title.value + " contains search term <b>" + search_term + "</b></li>";		
+						continue; //print the message and go to the next object
+					}
+				}
+				//if there isn't a matching title, then check for a matching medium
+				if ("medium" in file_data.objects[i]) {
+					console.log(file_data.objects[i].medium.value);
+					if (search_regexp.test(file_data.objects[i].medium.value)) {
+						output+="<li> Object <b>" + file_data.objects[i].invno.value + "</b> medium " + file_data.objects[i].medium.value + " contains search term <b>" + search_term + "</b></li>";		
+						continue;
+					}
+				}
+			}
+*/
+		output+="</ol>"
+		document.getElementById("results").innerHTML=output;
 	});
 
 </script>
