@@ -5,9 +5,10 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <a href="http://jquery.com/">jQuery</a>
+    <h3>eMuseum Report</h3>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
 
+    <div id="header"></div>
 	<div id="results"></div>
 	
 	<script>
@@ -16,13 +17,15 @@
 //		console.log(json);
 //	});
 
-	//start output table
 	var search_term = 'gold';
 	var search_regexp = new RegExp(search_term, "i");
 	console.log(search_regexp);
 
-	//var output = "";
-	var output = "<h3> You searched for: '" + search_term + "'</h3><table><tr><td><b>Object</b></td><td><b>Field</b></td><td><b>Value</b></td></tr>";
+	//start header
+	var header = "<h3> You searched for: '" + search_term + "'</h3>";
+	
+	//start output table
+	var output = "<table><tr><td><b>Object</b></td><td><b>Field</b></td><td><b>Value</b></td></tr>";
 
 //	$.getJSON("http://romtmsem/search/moss/objects/json?callback=?", function(json) {
 //	$.ajax({
@@ -67,7 +70,18 @@
 		}
 
 		output+="</table>"
+
+		//add summary counts to header
+		//numbers hard-coded for demo
+		header +="<h4>Total results: 303</h4>"
+		+"<h4>title: 5<br>"
+		+"makerDisplay: 1<br>"
+		+"medium: 219<br>"
+		+"description: 80</h4>";
+
+		document.getElementById("header").innerHTML=header;
 		document.getElementById("results").innerHTML=output;
+
 	});
 
 </script>
