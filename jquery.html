@@ -17,7 +17,7 @@
 
 	var output = "<ul>"; //start output
 
-	var search_term = 'moss';
+	var search_term = 'gold ';
 	var search_regexp = new RegExp(search_term, "i");
 	console.log(search_regexp);
 
@@ -27,7 +27,7 @@
 //	context: document.body
 //	}).done(function(json) {
 
-	$.getJSON('http://localhost/emuseum_report/moss_search.txt', function(json) {
+	$.getJSON('http://localhost/emuseum_report/gold_search.txt', function(json) {
 		console.log(json);
 		file_data = json;
 		console.log(file_data);
