@@ -15,11 +15,13 @@
 //		console.log(json);
 //	});
 
-	var output = "<ul>"; //start output
-
+	//start output table
 	var search_term = 'gold ';
 	var search_regexp = new RegExp(search_term, "i");
 	console.log(search_regexp);
+
+	//var output = "";
+	var output = "<h3> You searched for: '" + search_term + "'</h3> <table><tr><td><b>Object</b></td><td><b>Field</b></td><td><b>Value</b></td></tr>";
 
 //	$.getJSON("http://romtmsem/search/moss/objects/json?callback=?", function(json) {
 //	$.ajax({
@@ -32,8 +34,7 @@
 		file_data = json;
 		console.log(file_data);
 
-		//start list
-		var output="<ol>";
+		//var output="<ol>"; start list
 		//declare keys in order of eMuseum boost value
 		var keys=["title", "people", "makerDisplay", "geography", "geoDisplay", "displayDate", 
 		"beginDate", "endDate", "medium", "period", "dimensions", "invno", "creditline", 
@@ -47,14 +48,15 @@
 				if (key in file_data.objects[i]) {  //check that the object has something for the field "key"
 					//if the field "key" value contains the search term
 					if (search_regexp.test(file_data.objects[i][key].value)) {
-						output+="<li> Object <b>" + file_data.objects[i].invno.value + "</b> | " + key + " " + file_data.objects[i][key].value + " | contains search term <b>" + search_term + "</b></li>";		
+						//output+="<li> Object <b>" + file_data.objects[i].invno.value + "</b> | " + key + " " + file_data.objects[i][key].value + " | contains search term <b>" + search_term + "</b></li>";		
+						output+="<tr><td><a href='http://romtmsem/objects/" + file_data.objects[i].id.value +"'>" + file_data.objects[i].invno.value + "</a></td><td>" + key + " </td><td>" + file_data.objects[i][key].value +"</td></tr>";
 						break; //print the message and go to the next object
 					}
 				}
 			}
 		}
 
-		output+="</ol>"
+		output+="</table>"
 		document.getElementById("results").innerHTML=output;
 	});
 
