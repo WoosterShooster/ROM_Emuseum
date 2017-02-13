@@ -2,6 +2,7 @@
 <head>
     <meta charset="utf-8">
     <title>Demo</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <a href="http://jquery.com/">jQuery</a>
@@ -21,7 +22,7 @@
 	console.log(search_regexp);
 
 	//var output = "";
-	var output = "<h3> You searched for: '" + search_term + "'</h3> <table><tr><td><b>Object</b></td><td><b>Field</b></td><td><b>Value</b></td></tr>";
+	var output = "<h3> You searched for: '" + search_term + "'</h3><table><tr><td><b>Object</b></td><td><b>Field</b></td><td><b>Value</b></td></tr>";
 
 //	$.getJSON("http://romtmsem/search/moss/objects/json?callback=?", function(json) {
 //	$.ajax({
@@ -44,18 +45,24 @@
 		//for each object in the file data...
 		for (var i = 0; i < file_data.objects.length; i++){
 			var match_found = false;
+
+			//insert media if exists
+			if (file_data.objects[i].mediaExistence.value == true){
+				image_insert = "<br><img height=75px src='http://romtmsem" + file_data.objects[i].primaryMedia.value + "'>";
+			} else { image_insert = ""; }
+
 			for (var k = 0; k < keys.length; k++) {
 				var key = keys[k]; //set the name of the key to a variable
 				if (key in file_data.objects[i]) {  //if the object has something for the field "key"
 					if (search_regexp.test(file_data.objects[i][key].value)) {	//if the field "key" value contains the search term
-						output+="<tr><td><a href='http://romtmsem/objects/" + file_data.objects[i].id.value +"'>" + file_data.objects[i].invno.value + "</a></td><td>" + key + " </td><td>" + file_data.objects[i][key].value +"</td></tr>";
+						output+="<tr><td><a href='http://romtmsem/objects/" + file_data.objects[i].id.value +"'>" + file_data.objects[i].invno.value + "</a>" + image_insert +"</td><td>" + key + " </td><td>" + file_data.objects[i][key].value +"</td></tr>";
 						match_found = true;
 						break; // go to the next object
 					}
 				}
 			}
 			if(!match_found){ //if no match found, it must be one of the fields currently excluded from the API
-				output+="<tr><td><a href='http://romtmsem/objects/" + file_data.objects[i].id.value +"'>" + file_data.objects[i].invno.value + "</a></td><td>geog, dimensions, creditline, exhHistory, or description</td><td> <i>fields not available in API</i></td></tr>";
+				output+="<tr><td><a href='http://romtmsem/objects/" + file_data.objects[i].id.value +"'>" + file_data.objects[i].invno.value + "</a></td><td>geog, dimensions, creditline, exhHistory, or description</td><td> <i>fields not available in API yet</i></td></tr>";
 			}
 		}
 
