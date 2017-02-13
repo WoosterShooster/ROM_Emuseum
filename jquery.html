@@ -43,16 +43,19 @@
 
 		//for each object in the file data...
 		for (var i = 0; i < file_data.objects.length; i++){
-			for (var k in keys) {
+			var match_found = false;
+			for (var k = 0; k < keys.length; k++) {
 				var key = keys[k]; //set the name of the key to a variable
-				if (key in file_data.objects[i]) {  //check that the object has something for the field "key"
-					//if the field "key" value contains the search term
-					if (search_regexp.test(file_data.objects[i][key].value)) {
-						//output+="<li> Object <b>" + file_data.objects[i].invno.value + "</b> | " + key + " " + file_data.objects[i][key].value + " | contains search term <b>" + search_term + "</b></li>";		
+				if (key in file_data.objects[i]) {  //if the object has something for the field "key"
+					if (search_regexp.test(file_data.objects[i][key].value)) {	//if the field "key" value contains the search term
 						output+="<tr><td><a href='http://romtmsem/objects/" + file_data.objects[i].id.value +"'>" + file_data.objects[i].invno.value + "</a></td><td>" + key + " </td><td>" + file_data.objects[i][key].value +"</td></tr>";
-						break; //print the message and go to the next object
+						match_found = true;
+						break; // go to the next object
 					}
 				}
+			}
+			if(!match_found){ //if no match found, it must be one of the fields currently excluded from the API
+				output+="<tr><td><a href='http://romtmsem/objects/" + file_data.objects[i].id.value +"'>" + file_data.objects[i].invno.value + "</a></td><td>geog, dimensions, creditline, exhHistory, or description</td><td> <i>fields not available in API</i></td></tr>";
 			}
 		}
 
