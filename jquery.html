@@ -10,11 +10,10 @@
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
 	<!--load fields_object from config file-->
 	<script src="fields_object.js"></script> 
-	<script> console.log(fields_object.fields[3].label); 
-	console.log(fields_object.fields[3].count);
-	fields_object.fields[3].count+=1;
-	console.log(fields_object.fields[3].count);
-
+	<script> 
+	//count other variable must be declared because some fields don't work in API yet
+	var count_other = 0;
+	var total_count = 0;
 	</script>
 
 	<section id="fetch">
@@ -72,30 +71,38 @@
 									if (search_regexp.test(file_data.objects[i][key].value)) {	//and if the field "key" value contains the search term
 										output+="<tr><td><a href='http://romtmsem/objects/" + file_data.objects[i].id.value +"'>" + file_data.objects[i].invno.value + "</a>" + image_insert +"</td><td>" + key + " </td><td>" + file_data.objects[i][key].value +"</td></tr>";
 										match_found = true;
+										fields_object.fields[k].count += 1; //add one to count for that field
+										total_count += 1;
 										break; // print line and go to the next object
 									}
 								}
 							}
 							if(!match_found){ //if no match found, it must be one of the fields currently excluded from the API
 								output+="<tr><td><a href='http://romtmsem/objects/" + file_data.objects[i].id.value +"'>" + file_data.objects[i].invno.value + "</a></td><td>geog, dimensions, creditline, exhHistory, or description</td><td> <i>fields not available in API yet</i></td></tr>";
+								count_other += 1;
+								total_count += 1;
 							}
 						}
-
 						output+="</table>"
 
+
 						//add summary counts to header
-						//numbers hard-coded for demo
-						header +="<h4>Total results: 303</h4>"
-						+"<h4>title: 5<br>"
-						+"makerDisplay: 1<br>"
-						+"medium: 219<br>"
-						+"description: 80</h4>";
+						header += "<h4>Total results: " + total_count + "</h4>";
+						header += "<h4>";
+						for (var k = 0; k < fields_object.fields.length; k++) { //for each field
+							if (fields_object.fields[k].count > 0) { //print if the count is at least 1
+								header += fields_object.fields[k].label + ": " 
+								+ fields_object.fields[k].count + "<br>";
+							}
+						}
+						header += "other: " + count_other + "</h4>";
 
 						document.getElementById("header").innerHTML=header;
 						document.getElementById("results").innerHTML=output;
 
 					} else {
 						var output = '<h2 class="loading">No results found</h2>';
+						var header = '';
 						document.getElementById("header").innerHTML=header;
 						document.getElementById("results").innerHTML=output;
 					}
