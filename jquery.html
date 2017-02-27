@@ -30,7 +30,21 @@
 	//		console.log(json);
 	//	});
 
+	//function to get parameters from URL
+	$.urlParam = function(name){
+		var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
+		if (results==null) {
+			return null;
+		} else {
+			return results[1] || 0;
+		}
+	}
+
+
 	$(document).ready(function(){
+
+	console.log($.urlParam('search'));
+	console.log($.urlParam('field'));
 
 		var getResults = function(){
 			var search_term = $('#term').val();
@@ -111,12 +125,20 @@
 			return false;
 		}
 
+
+//		if ($.urlParam('search') {
+//			$.getResults()
+//		});
+
+
 		$('#search').click(getResults);
 		$('#term').keyup(function(event){
 			if(event.keyCode == 13){
 				getResults();
 			}
 		});
+
+
 	});
 			
 	</script>
