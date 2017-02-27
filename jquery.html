@@ -9,7 +9,7 @@
 	<h3><a href="jquery.html">eMuseum Report</a></h3>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
 	<!--load fields_object from config file-->
-	<script src="fields_object.js"></script> 
+<!--	<script src="fields_object.js"></script> -->
 	<script> 
 	//count other variable must be declared because some fields don't work in API yet
 	var count_other = 0;
@@ -31,32 +31,29 @@
 	//		console.log(json);
 	//	});
 
-	//function to get parameters from URL
-	$.urlParam = function(name){
-		var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
-		if (results==null) {
-			return null;
-		} else {
-			return results[1] || 0;
-		}
-	}
-
-
 	$(document).ready(function(){
 
-	console.log($.urlParam('search'));
-	console.log($.urlParam('field'));
+			//set counts
+			$.getScript("fields_object.js");
+			var count_other = 0;
+			var total_count = 0;
 
+		//giant getResults function: takes user input, fetches json, processes and prints results
 		var getResults = function(){
 			//search_term parameter comes from URL, else comes from search box
-			if ($.urlParam('search')) {
-				var search_term = $.urlParam('search');
+			if (url_searchterm) {
+				var search_term = url_searchterm;
 			} else {
 				var search_term = $('#term').val();
 			}
 
 			var search_regexp = new RegExp(search_term, "i");
 			console.log(search_regexp);
+
+			//(re)set counts
+			$.getScript("fields_object.js");
+			var count_other = 0;
+			var total_count = 0;
 
 			if(search_term == ''){ 		//validate that they've entered something
 				$('#box_response').html("<h2 class='loading'>Please enter something.</h2>");
@@ -68,13 +65,14 @@
 				$.getJSON("http://localhost/emuseum_report/" + search_term + "_search.txt", function(json) {
 					//As long as there's something, create the output
 					if (json != "Nothing found."){
-			
-						//start header and output
-						var header = "<h3> You searched for: '" + search_term + "'</h3>";
-						var output = "<table><tr><td><b>Object</b></td><td><b>Field</b></td><td><b>Value</b></td></tr>";
-						console.log(json);
 						file_data = json;
 						console.log(file_data);
+
+						//start header and output
+						var header = "<h3> You searched for: '" + search_term + "'";
+						if (url_field) { header += " and field '" + url_field + "'"; }
+						header += "</h3>";
+						var output = "<table><tr><td><b>Object</b></td><td><b>Field</b></td><td><b>Value</b></td></tr>";
 
 						//for each object in the file data...
 						for (var i = 0; i < file_data.objects.length; i++){
@@ -88,10 +86,9 @@
 
 							for (var k = 0; k < fields_object.fields.length; k++) { //for each field in the config
 								var key = fields_object.fields[k].label; //set the name the field to variable "key"
-								console.log(key);
-								if ($.urlParam('field') != null && key != $.urlParam('field')) {
-									console.log("skip it!")
+								if (url_field != null && key != url_field) {
 									continue;
+									//if a field is specified in the URL, skip it
 								}
 
 								if (key in file_data.objects[i]) {  //if the object has something for the field "key"
@@ -104,7 +101,7 @@
 									}
 								}
 							}
-							if($.urlParam('field') == null && !match_found ){ //if no match found, it must be one of the fields currently excluded from the API
+							if(!match_found && url_field == null){ //if no match found, it must be one of the fields currently excluded from the API
 								output+="<tr><td><a href='http://romtmsem/objects/" + file_data.objects[i].id.value +"'>" + file_data.objects[i].invno.value + "</a></td><td>geog, dimensions, creditline, exhHistory, or description</td><td> <i>fields not available in API yet</i></td></tr>";
 								count_other += 1;
 								total_count += 1;
@@ -118,12 +115,22 @@
 						header += "<h4>";
 						for (var k = 0; k < fields_object.fields.length; k++) { //for each field
 							if (fields_object.fields[k].count > 0) { //print if the count is at least 1
-								header += fields_object.fields[k].label + ": " 
-								+ fields_object.fields[k].count + "<br>";
+								//count contains URL to search results for just that field
+								header += "<a href='jquery.html?search="
+								+ search_term
+								+ "&field="
+								+ fields_object.fields[k].label
+								+ "'>"
+								+ fields_object.fields[k].label + ": " 
+								+ fields_object.fields[k].count + "</a><br>";
 							}
 						}
 						if (count_other > 0) {
 							header += "other: " + count_other + "</h4>";
+						}
+						if (url_field) {
+							header += "<a href='jquery.html?search=" + search_term + "'>"
+							+ "back to all results for '" + search_term + "'</a>";
 						}
 
 						document.getElementById("header").innerHTML=header;
@@ -139,13 +146,29 @@
 			}
 			return false;
 		}
+		//end giant getResults function
 
+		$.urlParam = function(name){
+		//gets a search term and specified field from URL
+			var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
+			if (results==null) {
+				return null;
+			} else {
+				return results[1] || 0;
+			}
+		}
+		var url_searchterm = $.urlParam('search');
+		var url_field = $.urlParam('field')
 
+		console.log(url_searchterm);
+		console.log(url_field);
 
-		if ($.urlParam('search')) {
+		//if there's a search term in URL, search with that
+		if (url_searchterm) {
 			getResults();
 		}
 
+		//otherwise users can input a search term
 		$('#search').click(getResults);
 		$('#term').keyup(function(event){
 			if(event.keyCode == 13){
